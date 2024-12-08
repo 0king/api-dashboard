@@ -1,0 +1,36 @@
+{
+  "name": "api-dashboard",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "start": "node dist/index.js",
+    "dev": "tsx --env-file=.env --watch ./src/index.ts",
+    "dev1": "nodemon src/index.ts",
+    "dev2": "nodemon -r tsconfig-paths/register src/index.ts",
+    "dev3": "node --loader=ts-node/esm --env-file=.env --watch src/index.ts"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mongoose": "^8.8.4"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "concurrently": "^9.1.0",
+    "nodemon": "^3.1.7",
+    "prisma": "^6.0.1",
+    "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.10",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

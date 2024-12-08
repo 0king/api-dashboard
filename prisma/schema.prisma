@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+//schema:
+//Level -> subject -> topic -> subtopic -> quesstions
+
+// 1-12 e.g., class 10 or level 10
+model Level {
+  id       Int       @id
+  name     String
+  subjects Subject[]
+}
+
+model Subject {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
+  Level       Level   @relation(fields: [levelId], references: [id])
+  levelId     Int
+  topics      Topic[]
+}
+
+model Topic {
+  id            Int        @id @default(autoincrement())
+  name          String
+  description   String?
+  Subject       Subject    @relation(fields: [subjectId], references: [id])
+  subjectId     Int
+  // one to many self-relationship 
+  parentTopicId Int?       @unique
+  parentTopic   Topic?     @relation("Subtopics", references: [parentTopicId], fields: [id])
+  subtopics     Topic[]    @relation("Subtopics")
+  questions     Question[]
+}
+
+model Question {
+  id        String   @id @default(cuid())
+  title     String?
+  type      String?
+  content   String[]
+  media     String[]
+  minutes   Int // time required, time to pause
+  topicId   Int
+  topic     Topic    @relation(fields: [topicId], references: [id])
+  order     Int //order within a list
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    Author   @relation(fields: [authorId], references: [id])
+  authorId  Int
+  exam      Exam?    @relation(fields: [examId], references: [id])
+  examId    String?
+}
+
+model Solution {
+  id        Int      @id @default(autoincrement())
+  content   String[]
+  media     String[]
+  minutes   Int // time required
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  author    Author   @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+/// Test
+model Exam {
+  id          String     @id @default(uuid())
+  minutes     Int // time duration
+  name        String //title
+  description String?
+  image       String? //cover image or gif
+  questions   Question[]
+}
+
+model Student {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model Author {
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  name      String
+  questions Question[]
+  answers   Solution[]
+}
+
+enum Role {
+  ADMIN
+  USER
+}

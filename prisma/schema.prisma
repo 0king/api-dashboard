@@ -38,9 +38,9 @@ model Topic {
   description   String?
   Subject       Subject    @relation(fields: [subjectId], references: [id])
   subjectId     Int
-  // one to many self-relationship 
-  parentTopicId Int?       @unique
-  parentTopic   Topic?     @relation("Subtopics", references: [parentTopicId], fields: [id])
+  // one to many relationship with self
+  parentTopicId Int?
+  parentTopic   Topic?     @relation("Subtopics", fields: [parentTopicId], references: [id])
   subtopics     Topic[]    @relation("Subtopics")
   questions     Question[]
 }

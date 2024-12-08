@@ -20,12 +20,15 @@ datasource db {
 model Level {
   id       Int       @id
   name     String
+  media     String?
+  description String?
   subjects Subject[]
 }
 
 model Subject {
   id          Int     @id @default(autoincrement())
   name        String
+  media     String?
   description String?
   Level       Level   @relation(fields: [levelId], references: [id])
   levelId     Int
@@ -36,6 +39,7 @@ model Topic {
   id            Int        @id @default(autoincrement())
   name          String
   description   String?
+  media   String?
   Subject       Subject    @relation(fields: [subjectId], references: [id])
   subjectId     Int
   // one to many relationship with self
@@ -74,7 +78,7 @@ model Solution {
   authorId  Int
 }
 
-/// Test
+/// daily, Weekly, monthly Test
 model Exam {
   id          String     @id @default(uuid())
   minutes     Int // time duration

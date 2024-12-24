@@ -14,32 +14,37 @@ datasource db {
 }
 
 //schema:
-//Level -> subject -> topic -> subtopic -> quesstions
+//Level -> subject -> topic -> (sub)topic -> questions
+//media = JSON = {url, height, width, thumb}
 
 // 1-12 e.g., class 10 or level 10
 model Level {
-  id       Int       @id
-  name     String
-  media     String?
+  id          Int       @id
+  name        String
+  media       Json?
   description String?
-  subjects Subject[]
+  subjects    Subject[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Subject {
-  id          Int     @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   name        String
-  media     String?
+  media       Json?
   description String?
-  Level       Level   @relation(fields: [levelId], references: [id])
+  Level       Level    @relation(fields: [levelId], references: [id])
   levelId     Int
   topics      Topic[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Topic {
   id            Int        @id @default(autoincrement())
   name          String
   description   String?
-  media   String?
+  media         Json?
   Subject       Subject    @relation(fields: [subjectId], references: [id])
   subjectId     Int
   // one to many relationship with self
@@ -47,35 +52,41 @@ model Topic {
   parentTopic   Topic?     @relation("Subtopics", fields: [parentTopicId], references: [id])
   subtopics     Topic[]    @relation("Subtopics")
   questions     Question[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
 }
 
 model Question {
-  id        String   @id @default(cuid())
-  title     String?
-  type      String?
-  content   String[]
-  media     String[]
-  minutes   Int // time required, time to pause
-  topicId   Int
-  topic     Topic    @relation(fields: [topicId], references: [id])
-  order     Int //order within a list
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    Author   @relation(fields: [authorId], references: [id])
-  authorId  Int
-  exam      Exam?    @relation(fields: [examId], references: [id])
-  examId    String?
+  id         String    @id @default(cuid())
+  title      String?
+  type       String?
+  content    String[]
+  media      Json[]
+  minutes    Int // time required, time to pause
+  topicId    Int
+  topic      Topic     @relation(fields: [topicId], references: [id])
+  order      Int //order within a list
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  author     Author    @relation(fields: [authorId], references: [id])
+  authorId   Int
+  exam       Exam?     @relation(fields: [examId], references: [id])
+  examId     String?
+  solution   Solution?
+  solutionId Int?
 }
 
 model Solution {
-  id        Int      @id @default(autoincrement())
-  content   String[]
-  media     String[]
-  minutes   Int // time required
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  author    Author   @relation(fields: [authorId], references: [id])
-  authorId  Int
+  id         Int      @id @default(autoincrement())
+  content    String[]
+  media      Json[]
+  minutes    Int // time required
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  author     Author   @relation(fields: [authorId], references: [id])
+  authorId   Int
+  question   Question @relation(fields: [questionId], references: [id])
+  questionId String   @unique
 }
 
 /// daily, Weekly, monthly Test
@@ -84,22 +95,30 @@ model Exam {
   minutes     Int // time duration
   name        String //title
   description String?
-  image       String? //cover image or gif
+  image       Json? //cover image or gif
   questions   Question[]
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }
 
 model Student {
-  id    Int     @id @default(autoincrement())
-  email String  @unique
-  name  String?
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  image String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Author {
   id        Int        @id @default(autoincrement())
   email     String     @unique
   name      String
+  image String?
   questions Question[]
   answers   Solution[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 enum Role {

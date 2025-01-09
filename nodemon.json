@@ -1,7 +1,8 @@
 {
   "watch": ["src"],
   "ext": "ts",
-  "exec": "concurrently \"npx tsc --watch\" \"ts-node src/index.ts\"",
+  "exec": "tsx watch ./src/index.ts --env-file=.env",
+  "exec3": "concurrently \"npx tsc --watch\" \"ts-node src/index.ts\"",
   "exec2": "concurrently \"npx tsc --watch\" \"ts-node -r tsconfig-paths/register src/index.ts\"",
   "signal":"SIGINT"
 }

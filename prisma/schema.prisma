@@ -82,6 +82,7 @@ model Question {
   examId     String?
   answers    String[]
   solutions  String[]
+  hints      String[]
 }
 
 /// daily, Weekly, monthly Test
